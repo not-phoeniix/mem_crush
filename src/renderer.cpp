@@ -11,9 +11,7 @@ void (*draw)();
 unsigned int window_width;
 unsigned int window_height;
 
-float camera_angle;
-float camera_dist = 30;
-float camera_speed = 1;
+Camera* camera;
 
 void reshape(int w, int h) {
     // prevent divide by zero error
@@ -26,9 +24,8 @@ void reshape(int w, int h) {
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
-    float cam_x = cos(camera_angle) * camera_dist;
-    float cam_z = sin(camera_angle) * camera_dist;
-    gluLookAt(cam_x, 10, cam_z, 0, 0, 0, 0, 1, 0);
+    vec3 cam_pos = camera->get_position();
+    gluLookAt(cam_pos.x, cam_pos.y, cam_pos.z, 0, 0, 0, 0, 1, 0);
 
     // update perspective projection matrix
     glMatrixMode(GL_PROJECTION);
@@ -45,7 +42,6 @@ void idle() {
     int time_now = glutGet(GLUT_ELAPSED_TIME);
     delta_time = (time_now - time_prev) / 1000.0f;
     time_prev = time_now;
-    camera_angle += delta_time * camera_speed;
     update(delta_time);
 
     reshape(window_width, window_height);
@@ -60,7 +56,7 @@ void display() {
     glutSwapBuffers();
 }
 
-void renderer_init(int* argc, char** argv, void (*update_func)(float), void (*draw_func)()) {
+void renderer_init(int* argc, char** argv, void (*update_func)(float), void (*draw_func)(), Camera* cam) {
     if (!renderer_is_init) {
         std::cout << "initializing renderer...\n";
     } else {
@@ -68,6 +64,7 @@ void renderer_init(int* argc, char** argv, void (*update_func)(float), void (*dr
         return;
     }
 
+    camera = cam;
     update = update_func;
     draw = draw_func;
 
