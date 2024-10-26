@@ -26,7 +26,8 @@ void reshape(int w, int h) {
     glLoadIdentity();
 
     vec3 cam_pos = camera->get_position();
-    gluLookAt(cam_pos.x, cam_pos.y, cam_pos.z, 0, 0, 0, 0, 1, 0);
+    vec3 look_at = camera->get_position() + camera->get_rotation();
+    gluLookAt(cam_pos.x, cam_pos.y, cam_pos.z, look_at.x, look_at.y, look_at.z, 0, 1, 0);
 
     // update perspective projection matrix
     glMatrixMode(GL_PROJECTION);
