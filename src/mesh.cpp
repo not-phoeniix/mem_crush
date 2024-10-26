@@ -15,6 +15,9 @@ Mesh::Mesh() {
     faces = nullptr;
     num_faces = 0;
     is_loaded = false;
+    position = vec3(0, 0, 0);
+    rotation = vec3(0, 0, 0);
+    scale = vec3(1, 1, 1);
 }
 
 Mesh::~Mesh() {
@@ -118,17 +121,6 @@ void Mesh::LoadFromObj(const char* file_path) {
     cout << "obj file at path \"" << file_path << "\" loaded :D!\n";
 }
 
-void Mesh::DrawFace(uvec3 face) {
-    vec3 point_one = vertices[face.x];
-    glVertex3f(point_one.x, point_one.y, point_one.z);
-
-    vec3 point_two = vertices[face.y];
-    glVertex3f(point_two.x, point_two.y, point_two.z);
-
-    vec3 point_three = vertices[face.z];
-    glVertex3f(point_three.x, point_three.y, point_three.z);
-}
-
 void Mesh::DrawWireframe() {
     // don't draw mesh if there's nothing to draw in the first place
     if (num_vertices == 0 || num_faces == 0) {
@@ -137,7 +129,9 @@ void Mesh::DrawWireframe() {
 
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
-    glScalef(6, 6, 6);
+    glScalef(scale.x, scale.y, scale.z);
+    glTranslatef(position.x, position.y, position.z);
+    // glRotatef(angle?, rotation.x, rotation.y, rotation.z);
 
     float color_step = 1.0f / num_faces;
     float color = 0;
@@ -145,7 +139,18 @@ void Mesh::DrawWireframe() {
     glBegin(GL_LINE_STRIP);
     for (int i = 0; i < num_faces; i++) {
         glColor3f(color, 1 - color, 1);
-        DrawFace(faces[i]);
+
+        uvec3 face = faces[i];
+
+        vec3 point_one = vertices[face.x];
+        glVertex3f(point_one.x, point_one.y, point_one.z);
+
+        vec3 point_two = vertices[face.y];
+        glVertex3f(point_two.x, point_two.y, point_two.z);
+
+        vec3 point_three = vertices[face.z];
+        glVertex3f(point_three.x, point_three.y, point_three.z);
+
         color += color_step;
     }
     glEnd();
@@ -160,3 +165,12 @@ unsigned int Mesh::get_num_vertices() {
 unsigned int Mesh::get_num_faces() {
     return num_faces;
 }
+
+vec3 Mesh::get_position() { return position; }
+void Mesh::set_position(vec3 position) { this->position = position; }
+
+vec3 Mesh::get_rotation() { return rotation; }
+void Mesh::set_rotation(vec3 rotation) { this->rotation = rotation; }
+
+vec3 Mesh::get_scale() { return scale; }
+void Mesh::set_scale(vec3 scale) { this->scale = scale; }
