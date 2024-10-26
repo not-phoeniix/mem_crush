@@ -1,13 +1,27 @@
 #include <iostream>
 #include <vector>
 
-#include "renderer.h"
+#include "window.h"
 #include "mesh.h"
+#include "input.h"
 
 Mesh test_mesh;
 Camera* cam;
 
+float cam_speed = 10;
+
 void update(float dt) {
+    if (Input::IsDown(FORWARD)) {
+        vec3 new_pos = cam->get_position();
+        new_pos.y += cam_speed * dt;
+        cam->set_position(new_pos);
+    }
+
+    if (Input::IsDown(BACKWARD)) {
+        vec3 new_pos = cam->get_position();
+        new_pos.y -= cam_speed * dt;
+        cam->set_position(new_pos);
+    }
 }
 
 void draw() {
@@ -20,10 +34,10 @@ int main(int argc, char* argv[]) {
     test_mesh.LoadFromObj("res/models/cube.obj");
     test_mesh.set_scale(vec3(4));
     cam = new Camera();
-    cam->set_position(vec3(10, 10, 0));
+    cam->set_position(vec3(20, 10, 0));
 
-    renderer_init(&argc, argv, update, draw, cam);
-    renderer_run();
+    window_init(&argc, argv, update, draw, cam);
+    window_run();
 
     return 0;
 }

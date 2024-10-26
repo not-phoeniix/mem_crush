@@ -1,6 +1,7 @@
-#include "renderer.h"
+#include "window.h"
 
 #include "glm/glm.hpp"
+#include "input.h"
 
 bool renderer_is_init = false;
 int time_prev = 0;
@@ -56,7 +57,47 @@ void display() {
     glutSwapBuffers();
 }
 
-void renderer_init(int* argc, char** argv, void (*update_func)(float), void (*draw_func)(), Camera* cam) {
+void keyboard(unsigned char key, int x, int y) {
+    switch (key) {
+        case 'w':
+            Input::UpdateAction(FORWARD, true);
+            break;
+        case 'a':
+            Input::UpdateAction(LEFT, true);
+            break;
+        case 's':
+            Input::UpdateAction(BACKWARD, true);
+            break;
+        case 'd':
+            Input::UpdateAction(RIGHT, true);
+            break;
+        case ' ':
+            Input::UpdateAction(JUMP, true);
+            break;
+    }
+}
+
+void keyboard_up(unsigned char key, int x, int y) {
+    switch (key) {
+        case 'w':
+            Input::UpdateAction(FORWARD, false);
+            break;
+        case 'a':
+            Input::UpdateAction(LEFT, false);
+            break;
+        case 's':
+            Input::UpdateAction(BACKWARD, false);
+            break;
+        case 'd':
+            Input::UpdateAction(RIGHT, false);
+            break;
+        case ' ':
+            Input::UpdateAction(JUMP, false);
+            break;
+    }
+}
+
+void window_init(int* argc, char** argv, void (*update_func)(float), void (*draw_func)(), Camera* cam) {
     if (!renderer_is_init) {
         std::cout << "initializing renderer...\n";
     } else {
@@ -76,6 +117,8 @@ void renderer_init(int* argc, char** argv, void (*update_func)(float), void (*dr
     glutReshapeFunc(reshape);
     glutIdleFunc(idle);
     glutDisplayFunc(display);
+    glutKeyboardFunc(keyboard);
+    glutKeyboardUpFunc(keyboard_up);
 
     glClearColor(0, 0, 0, 1);
     glClearDepth(1);
@@ -88,7 +131,7 @@ void renderer_init(int* argc, char** argv, void (*update_func)(float), void (*dr
     std::cout << "renderer initialized!\n";
 }
 
-void renderer_run() {
+void window_run() {
     glutMainLoop();
 }
 
