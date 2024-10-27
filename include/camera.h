@@ -52,4 +52,12 @@ class Camera {
     /// @brief Calculates and gets the forward facing vector for the camera's look direction
     /// @return A new normalized vec3 direction vector that camera is facing
     vec3 get_forward_dir();
+
+    /// @brief Calculates a normalized forward facing vector only in the x/z space
+    /// @return A new normalized vec3 with only x/z components
+    vec3 get_horiz_forward_dir();
+
+    /// @brief Calculates a normalized right facing vector only in the x/z space
+    /// @return A new normalized vec3 with only x/z components
+    vec3 get_horiz_right_dir();
 };

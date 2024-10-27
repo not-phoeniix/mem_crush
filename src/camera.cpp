@@ -17,8 +17,16 @@ vec3 Camera::get_position() { return position; }
 void Camera::set_position(vec3 position) { this->position = position; }
 
 float Camera::get_yaw() { return yaw; }
-void Camera::set_yaw(float yaw) { this->yaw = yaw; }
-void Camera::adj_yaw(float yaw) { this->yaw += yaw; }
+void Camera::set_yaw(float yaw) {
+    this->yaw = yaw;
+    if (this->yaw < 0) this->yaw = 2 * M_PI;
+    if (this->yaw > 2 * M_PI) this->yaw = 0;
+}
+void Camera::adj_yaw(float yaw) {
+    this->yaw += yaw;
+    if (this->yaw < 0) this->yaw = 2 * M_PI;
+    if (this->yaw > 2 * M_PI) this->yaw = 0;
+}
 
 float Camera::get_pitch() { return pitch; }
 void Camera::set_pitch(float pitch) {
@@ -33,11 +41,29 @@ void Camera::adj_pitch(float pitch) {
 vec3 Camera::get_forward_dir() {
     // vertical direction (y) only impacted by pitch,
     //   z and x are combo of pitch and yaw
-    vec3 dir(
+    return vec3(
         cos(yaw) * cos(pitch),
         sin(pitch),
         sin(yaw) * cos(pitch)
     );
+}
 
-    return dir;
+vec3 Camera::get_horiz_forward_dir() {
+    // get the forward direction without a y component,
+    //   only in x/z space with yaw
+    return vec3(
+        cos(yaw),
+        0,
+        sin(yaw)
+    );
+}
+
+vec3 Camera::get_horiz_right_dir() {
+    // get the right direction without a y component,
+    //   only in x/z space with yaw
+    return vec3(
+        cos(yaw + M_PI_2),
+        0,
+        sin(yaw + M_PI_2)
+    );
 }
