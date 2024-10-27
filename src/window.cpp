@@ -26,7 +26,7 @@ void reshape(int w, int h) {
     glLoadIdentity();
 
     vec3 cam_pos = camera->get_position();
-    vec3 look_at = camera->get_position() + camera->get_rotation();
+    vec3 look_at = camera->get_position() + camera->get_forward_dir();
     gluLookAt(cam_pos.x, cam_pos.y, cam_pos.z, look_at.x, look_at.y, look_at.z, 0, 1, 0);
 
     // update perspective projection matrix
@@ -98,6 +98,10 @@ void keyboard_up(unsigned char key, int x, int y) {
     }
 }
 
+void mouse_passive_motion(int x, int y) {
+    Input::set_mouse_pos(vec2(x, y));
+}
+
 void window_init(int* argc, char** argv, void (*update_func)(float), void (*draw_func)(), Camera* cam) {
     if (!renderer_is_init) {
         std::cout << "initializing renderer...\n";
@@ -120,6 +124,7 @@ void window_init(int* argc, char** argv, void (*update_func)(float), void (*draw
     glutDisplayFunc(display);
     glutKeyboardFunc(keyboard);
     glutKeyboardUpFunc(keyboard_up);
+    glutPassiveMotionFunc(mouse_passive_motion);
 
     glClearColor(0, 0, 0, 1);
     glClearDepth(1);

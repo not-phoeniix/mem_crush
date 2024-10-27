@@ -79,6 +79,9 @@
         "thread": "cpp",
         "queue": "cpp",
         "stack": "cpp",
-        "fstream": "cpp"
+        "fstream": "cpp",
+        "regex": "cpp",
+        "any": "cpp",
+        "print": "cpp"
     }
 }
